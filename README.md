@@ -16,7 +16,7 @@ npm install ivoreis/tvmaze
 
 ```
 
-### Initialize
+### Initialize
 
 ```js
 const TVMaze = require('TVMaze');
