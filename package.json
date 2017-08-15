@@ -1,6 +1,6 @@
 {
   "name": "tvmaze.com",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "TVMAZE wrapper api",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "url": "https://github.com/ivoreis/tvmaze.com"
   },
   "bugs": {
-      "url": "https://github.com/ivoreis/tvmaze.com/issues"
+    "url": "https://github.com/ivoreis/tvmaze.com/issues"
   },
   "keywords": [
     "tv",
