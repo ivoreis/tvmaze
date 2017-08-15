@@ -10,6 +10,13 @@
     "prepare": "npm run compile",
     "prepublishOnly": "npm version patch && npm run prepare"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivoreis/tvmaze.com"
+  },
+  "bugs": {
+      "url": "https://github.com/ivoreis/tvmaze.com/issues"
+  },
   "keywords": [
     "tv",
     "tvshows",
