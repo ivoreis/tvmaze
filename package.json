@@ -1,0 +1,35 @@
+{
+  "name": "TVMaze",
+  "version": "0.0.1",
+  "description": "TVMAZE wrapper api",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint src",
+    "compile": "npm run clean && mkdir dist && babel src --out-file dist/index.js",
+    "prepare": "npm run compile",
+    "prepublishOnly": "npm run prepare"
+  },
+  "keywords": [
+    "tv",
+    "tvshows",
+    "tvmaze",
+    "api"
+  ],
+  "author": "Ivo Reis",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.4.1",
+    "eslint-config-airbnb-base": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "rimraf": "^2.6.1"
+  },
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  }
+}
