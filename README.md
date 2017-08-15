@@ -19,7 +19,7 @@ npm install tvmaze.com
 ### Initialize
 
 ```js
-const TVMaze = require('TVMaze');
+const TVMaze = require('tvmaze.com');
 
 const tvmaze = new TVMaze();
 
