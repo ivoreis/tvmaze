@@ -12,7 +12,7 @@
 
 ```js
 
-npm install ivoreis/tvmaze
+npm install tvmaze.com
 
 ```
 

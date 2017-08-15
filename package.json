@@ -1,8 +1,8 @@
 {
-  "name": "TVMaze",
+  "name": "tvmaze.com",
   "version": "0.0.1",
   "description": "TVMAZE wrapper api",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint src",
