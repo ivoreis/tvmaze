@@ -21,18 +21,13 @@ npm install tvmaze.com
 ```js
 const TVMaze = require('tvmaze.com');
 
-const tvmaze = new TVMaze();
-
-tvmaze
-  .getPopulars()
-  .then(data =>
-    data.map(
-      show => ({
-        name: show.name,
-        status: show.status,
-        rating: show.rating.average,
-      })
-    )
+TVMaze
+  .singleSearchShow(
+    'game of thrones',
+    ['nextepisode', 'previousepisode']
+  )
+  .then(show =>
+    TVMaze.stripHTML(show.summary)
   )
   .then(console.log.bind(console));
 
@@ -41,6 +36,8 @@ tvmaze
 ## Methods
 
 * **searchShow(name)**
+
+* **singleSearchShow(name, embed)**
 
 * **searchPeople(name)**
 
@@ -56,19 +53,19 @@ tvmaze
 
 * **getCrewCredits(id, embed)**
 
-* **getShowSeasons(showId)**
+* **getShowSeasons(id)**
 
-* **getShowSeasonEpisodes(showId, season)**
+* **getShowSeasonEpisodes(id, season)**
 
-* **getShowSeasonEpisode(showId, season, number)**
+* **getShowSeasonEpisode(id, season, number)**
 
-* **getEpisodes(showId)**
+* **getEpisodes(id)**
 
-* **getEpisodeById(episodeId)**
+* **getEpisodeById(id)**
 
-* **getCast(showId)**
+* **getCast(id)**
 
-* **getCrew(showId)**
+* **getCrew(id)**
 
 * **getUpdates()**
 
