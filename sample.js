@@ -1,10 +1,11 @@
-const TvMaze = require('./dist/').default;
+const TVMaze = require('./index');
 
-const tvmaze = new TvMaze();
-
-const stripHTML = html =>
-  html && html.replace(/<(?:.|\n)*?>/gm, '') || null;
-
-tvmaze
-  .searchShow('game of thrones')
+TVMaze
+  .singleSearchShow(
+    'game of thrones',
+    ['nextepisode', 'previousepisode']
+  )
+  .then(show =>
+    TVMaze.stripHTML(show.summary)
+  )
   .then(console.log.bind(console));

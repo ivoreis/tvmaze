@@ -1,122 +1,147 @@
-import rp from 'request-promise';
+import {
+  arrayToQueryString,
+  objectToParamsArray,
+  embedToArray,
+  request,
+  stripHTML,
+} from './helpers';
 
-const EMBED = 'embed[]=';
+const URL = 'http://api.tvmaze.com';
 
-const qs = params =>
-  Object
-    .keys(params)
-    .map(
-      key => `${key}=${encodeURIComponent(params[key])}`,
-    )
-    .join('&');
+const searchShow = (name) => {
+  const qs = arrayToQueryString(
+    objectToParamsArray({ q: name }),
+  );
+  return request({ url: `${URL}/search/shows/?${qs}` });
+};
 
-class TVMaze {
-  constructor(url = 'http://api.tvmaze.com/') {
-    this.APIURL = url;
-  }
+const singleSearchShow = (name, embed) => {
+  const qs = arrayToQueryString([
+    ...objectToParamsArray({ q: name }),
+    ...embedToArray(embed),
+  ]);
+  return request({ url: `${URL}/singlesearch/shows/?${qs}` });
+};
 
-  searchShow(name) {
-    return rp({ url: `${this.APIURL}search/shows/?${qs({ q: name })}`, json: true });
-  }
+const searchPeople = (name) => {
+  const qs = arrayToQueryString(
+    objectToParamsArray({ q: name }),
+  );
+  return request({ url: `${URL}/search/people/?${qs}` });
+};
 
-  searchPeople(name) {
-    return rp({ url: `${this.APIURL}search/people/?${qs({ q: name })}`, json: true });
-  }
+const lookupShow = (params) => {
+  const qs = arrayToQueryString(
+    objectToParamsArray(params),
+  );
+  return request({ url: `${URL}/lookup/shows/?${qs}` });
+};
 
-  lookupShow(params) {
-    return rp({ url: `${this.APIURL}lookup/shows/?${qs(params)}`, json: true });
-  }
+const schedule = ({ country, date }) => {
+  const qs = arrayToQueryString(
+    objectToParamsArray({ country, date }),
+  );
+  return request({ url: `${URL}/schedule/?${qs}` });
+};
 
-  schedule({ country, date }) {
-    return rp({ url: `${this.APIURL}schedule/?${qs({ country, date })}`, json: true });
-  }
+const getShow = (id, embed) => {
+  const qs = arrayToQueryString([
+    ...embedToArray(embed),
+  ]);
+  return request({ url: `${URL}/shows/${id}/?${qs}` });
+};
 
-  getShow(showId, embed) {
-    let extra = '';
+const getPeople = (id, embed) => {
+  const qs = arrayToQueryString([
+    ...embedToArray(embed),
+  ]);
+  return request({ url: `${URL}/people/${id}/?${qs}` });
+};
 
-    if (embed) {
-      extra = `?${EMBED}${embed.join(`&${EMBED}`)}`;
-    }
+const getCastCredits = (id, embed) => {
+  const qs = arrayToQueryString([
+    ...embedToArray(embed),
+  ]);
+  return request({ url: `${URL}/people/${id}/castcredits/?${qs}` });
+};
 
-    return rp({ url: `${this.APIURL}shows/${showId}${extra}`, json: true });
-  }
+const getCrewCredits = (id, embed) => {
+  const qs = arrayToQueryString([
+    ...embedToArray(embed),
+  ]);
+  return request({ url: `${URL}/people/${id}/crewcredits/?${qs}` });
+};
 
-  getPeople(id, embed) {
-    let extra = '';
+const getShowSeasons = id =>
+  request({ url: `${URL}/shows/${id}/seasons` });
 
-    if (embed) {
-      extra = `?${EMBED}${embed.join(`&${EMBED}`)}`;
-    }
+const getShowSeasonEpisodes = (id, season) =>
+  request({ url: `${URL}/shows/${id}/seasons/${season}/episodes` });
 
-    return rp({ url: `${this.APIURL}people/${id}${extra}`, json: true });
-  }
+const getShowSeasonEpisode = (id, season, number) => {
+  const qs = arrayToQueryString(
+    objectToParamsArray({ season, number }),
+  );
+  return request({ url: `${URL}/shows/${id}/episodebynumber/?${qs}` });
+};
 
-  getCastCredits(id, embed) {
-    let extra = '';
+const getEpisodes = id =>
+  request({ url: `${URL}/shows/${id}/episodes` });
 
-    if (embed) {
-      extra = `?${EMBED}${embed.join(`&${EMBED}`)}`;
-    }
+const getEpisodeById = id =>
+  request({ url: `${URL}/episodes/${id}` });
 
-    return rp({ url: `${this.APIURL}people/${id}/castcredits${extra}`, json: true });
-  }
+const getCast = id =>
+  request({ url: `${URL}/shows/${id}/cast` });
 
-  getCrewCredits(id, embed) {
-    let extra = '';
+const getCrew = id =>
+  request({ url: `${URL}/shows/${id}/crew` });
 
-    if (embed) {
-      extra = `?${EMBED}${embed.join(`&${EMBED}`)}`;
-    }
+const getUpdates = () =>
+  request({ url: `${URL}/updates/shows` });
 
-    return rp({ url: `${this.APIURL}people/${id}/crewcredits${extra}`, json: true });
-  }
+const getPopulars = (limit = 20) =>
+  request({ url: `${URL}/shows` })
+    .then(
+      shows =>
+        shows
+          .sort(
+            (a, b) => (b.weight + b.rating.average) - (a.weight + a.rating.average),
+          )
+          .slice(0, limit),
+    );
 
-  getShowSeasons(showId) {
-    return rp({ url: `${this.APIURL}shows/${showId}/seasons`, json: true });
-  }
+export default {
+  // Search
+  searchShow,
+  singleSearchShow,
+  lookupShow,
+  searchPeople,
 
-  getShowSeasonEpisodes(showId, season) {
-    return rp({ url: `${this.APIURL}shows/${showId}/seasons/${season}/episodes`, json: true });
-  }
+  // Schedule
+  schedule,
 
-  getShowSeasonEpisode(showId, season, number) {
-    return rp({
-      url: `${this.APIURL}shows/${showId}/episodebynumber/?season=${season}&number=${number}`,
-      json: true,
-    });
-  }
+  // Shows
+  getShow,
+  getShowSeasons,
+  getShowSeasonEpisode,
+  getShowSeasonEpisodes,
+  getEpisodes,
+  getEpisodeById,
 
-  getEpisodes(showId) {
-    return rp({ url: `${this.APIURL}shows/${showId}/episodes`, json: true });
-  }
+  // People
+  getPeople,
+  getCastCredits,
+  getCrewCredits,
+  getCast,
+  getCrew,
 
-  getEpisodeById(episodeId) {
-    return rp({ url: `${this.APIURL}episodes/${episodeId}`, json: true });
-  }
+  // Updates
+  getUpdates,
 
-  getCast(showId) {
-    return rp({ url: `${this.APIURL}shows/${showId}/cast`, json: true });
-  }
+  // Extra
+  getPopulars,
 
-  getCrew(showId) {
-    return rp({ url: `${this.APIURL}shows/${showId}/crew`, json: true });
-  }
-
-  getUpdates() {
-    return rp({ url: `${this.APIURL}updates/shows`, json: true });
-  }
-
-  getPopulars(limit = 20) {
-    return rp({ url: `${this.APIURL}shows`, json: true })
-      .then(
-        shows =>
-          shows
-            .sort(
-              (a, b) => (b.weight + b.rating.average) - (a.weight + a.rating.average),
-            )
-            .slice(0, limit),
-      );
-  }
-}
-
-export default TVMaze;
+  // Utils
+  stripHTML,
+};

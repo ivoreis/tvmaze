@@ -4,157 +4,134 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _helpers = require('./helpers');
 
-var _requestPromise = require('request-promise');
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var _requestPromise2 = _interopRequireDefault(_requestPromise);
+var URL = 'http://api.tvmaze.com';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var EMBED = 'embed[]=';
-
-var qs = function qs(params) {
-  return Object.keys(params).map(function (key) {
-    return key + '=' + encodeURIComponent(params[key]);
-  }).join('&');
+var searchShow = function searchShow(name) {
+  var qs = (0, _helpers.arrayToQueryString)((0, _helpers.objectToParamsArray)({ q: name }));
+  return (0, _helpers.request)({ url: URL + '/search/shows/?' + qs });
 };
 
-var TVMaze = function () {
-  function TVMaze() {
-    var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'http://api.tvmaze.com/';
+var singleSearchShow = function singleSearchShow(name, embed) {
+  var qs = (0, _helpers.arrayToQueryString)([].concat(_toConsumableArray((0, _helpers.objectToParamsArray)({ q: name })), _toConsumableArray((0, _helpers.embedToArray)(embed))));
+  return (0, _helpers.request)({ url: URL + '/singlesearch/shows/?' + qs });
+};
 
-    _classCallCheck(this, TVMaze);
+var searchPeople = function searchPeople(name) {
+  var qs = (0, _helpers.arrayToQueryString)((0, _helpers.objectToParamsArray)({ q: name }));
+  return (0, _helpers.request)({ url: URL + '/search/people/?' + qs });
+};
 
-    this.APIURL = url;
-  }
+var lookupShow = function lookupShow(params) {
+  var qs = (0, _helpers.arrayToQueryString)((0, _helpers.objectToParamsArray)(params));
+  return (0, _helpers.request)({ url: URL + '/lookup/shows/?' + qs });
+};
 
-  _createClass(TVMaze, [{
-    key: 'searchShow',
-    value: function searchShow(name) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'search/shows/?' + qs({ q: name }), json: true });
-    }
-  }, {
-    key: 'searchPeople',
-    value: function searchPeople(name) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'search/people/?' + qs({ q: name }), json: true });
-    }
-  }, {
-    key: 'lookupShow',
-    value: function lookupShow(params) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'lookup/shows/?' + qs(params), json: true });
-    }
-  }, {
-    key: 'schedule',
-    value: function schedule(_ref) {
-      var country = _ref.country,
-          date = _ref.date;
+var schedule = function schedule(_ref) {
+  var country = _ref.country,
+      date = _ref.date;
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'schedule/?' + qs({ country: country, date: date }), json: true });
-    }
-  }, {
-    key: 'getShow',
-    value: function getShow(showId, embed) {
-      var extra = '';
+  var qs = (0, _helpers.arrayToQueryString)((0, _helpers.objectToParamsArray)({ country: country, date: date }));
+  return (0, _helpers.request)({ url: URL + '/schedule/?' + qs });
+};
 
-      if (embed) {
-        extra = '?' + EMBED + embed.join('&' + EMBED);
-      }
+var getShow = function getShow(id, embed) {
+  var qs = (0, _helpers.arrayToQueryString)([].concat(_toConsumableArray((0, _helpers.embedToArray)(embed))));
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/?' + qs });
+};
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + extra, json: true });
-    }
-  }, {
-    key: 'getPeople',
-    value: function getPeople(id, embed) {
-      var extra = '';
+var getPeople = function getPeople(id, embed) {
+  var qs = (0, _helpers.arrayToQueryString)([].concat(_toConsumableArray((0, _helpers.embedToArray)(embed))));
+  return (0, _helpers.request)({ url: URL + '/people/' + id + '/?' + qs });
+};
 
-      if (embed) {
-        extra = '?' + EMBED + embed.join('&' + EMBED);
-      }
+var getCastCredits = function getCastCredits(id, embed) {
+  var qs = (0, _helpers.arrayToQueryString)([].concat(_toConsumableArray((0, _helpers.embedToArray)(embed))));
+  return (0, _helpers.request)({ url: URL + '/people/' + id + '/castcredits/?' + qs });
+};
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'people/' + id + extra, json: true });
-    }
-  }, {
-    key: 'getCastCredits',
-    value: function getCastCredits(id, embed) {
-      var extra = '';
+var getCrewCredits = function getCrewCredits(id, embed) {
+  var qs = (0, _helpers.arrayToQueryString)([].concat(_toConsumableArray((0, _helpers.embedToArray)(embed))));
+  return (0, _helpers.request)({ url: URL + '/people/' + id + '/crewcredits/?' + qs });
+};
 
-      if (embed) {
-        extra = '?' + EMBED + embed.join('&' + EMBED);
-      }
+var getShowSeasons = function getShowSeasons(id) {
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/seasons' });
+};
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'people/' + id + '/castcredits' + extra, json: true });
-    }
-  }, {
-    key: 'getCrewCredits',
-    value: function getCrewCredits(id, embed) {
-      var extra = '';
+var getShowSeasonEpisodes = function getShowSeasonEpisodes(id, season) {
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/seasons/' + season + '/episodes' });
+};
 
-      if (embed) {
-        extra = '?' + EMBED + embed.join('&' + EMBED);
-      }
+var getShowSeasonEpisode = function getShowSeasonEpisode(id, season, number) {
+  var qs = (0, _helpers.arrayToQueryString)((0, _helpers.objectToParamsArray)({ season: season, number: number }));
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/episodebynumber/?' + qs });
+};
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'people/' + id + '/crewcredits' + extra, json: true });
-    }
-  }, {
-    key: 'getShowSeasons',
-    value: function getShowSeasons(showId) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + '/seasons', json: true });
-    }
-  }, {
-    key: 'getShowSeasonEpisodes',
-    value: function getShowSeasonEpisodes(showId, season) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + '/seasons/' + season + '/episodes', json: true });
-    }
-  }, {
-    key: 'getShowSeasonEpisode',
-    value: function getShowSeasonEpisode(showId, season, number) {
-      return (0, _requestPromise2.default)({
-        url: this.APIURL + 'shows/' + showId + '/episodebynumber/?season=' + season + '&number=' + number,
-        json: true
-      });
-    }
-  }, {
-    key: 'getEpisodes',
-    value: function getEpisodes(showId) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + '/episodes', json: true });
-    }
-  }, {
-    key: 'getEpisodeById',
-    value: function getEpisodeById(episodeId) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'episodes/' + episodeId, json: true });
-    }
-  }, {
-    key: 'getCast',
-    value: function getCast(showId) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + '/cast', json: true });
-    }
-  }, {
-    key: 'getCrew',
-    value: function getCrew(showId) {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows/' + showId + '/crew', json: true });
-    }
-  }, {
-    key: 'getUpdates',
-    value: function getUpdates() {
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'updates/shows', json: true });
-    }
-  }, {
-    key: 'getPopulars',
-    value: function getPopulars() {
-      var limit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
+var getEpisodes = function getEpisodes(id) {
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/episodes' });
+};
 
-      return (0, _requestPromise2.default)({ url: this.APIURL + 'shows', json: true }).then(function (shows) {
-        return shows.sort(function (a, b) {
-          return b.weight + b.rating.average - (a.weight + a.rating.average);
-        }).slice(0, limit);
-      });
-    }
-  }]);
+var getEpisodeById = function getEpisodeById(id) {
+  return (0, _helpers.request)({ url: URL + '/episodes/' + id });
+};
 
-  return TVMaze;
-}();
+var getCast = function getCast(id) {
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/cast' });
+};
 
-exports.default = TVMaze;
+var getCrew = function getCrew(id) {
+  return (0, _helpers.request)({ url: URL + '/shows/' + id + '/crew' });
+};
+
+var getUpdates = function getUpdates() {
+  return (0, _helpers.request)({ url: URL + '/updates/shows' });
+};
+
+var getPopulars = function getPopulars() {
+  var limit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
+  return (0, _helpers.request)({ url: URL + '/shows' }).then(function (shows) {
+    return shows.sort(function (a, b) {
+      return b.weight + b.rating.average - (a.weight + a.rating.average);
+    }).slice(0, limit);
+  });
+};
+
+exports.default = {
+  // Search
+  searchShow: searchShow,
+  singleSearchShow: singleSearchShow,
+  lookupShow: lookupShow,
+  searchPeople: searchPeople,
+
+  // Schedule
+  schedule: schedule,
+
+  // Shows
+  getShow: getShow,
+  getShowSeasons: getShowSeasons,
+  getShowSeasonEpisode: getShowSeasonEpisode,
+  getShowSeasonEpisodes: getShowSeasonEpisodes,
+  getEpisodes: getEpisodes,
+  getEpisodeById: getEpisodeById,
+
+  // People
+  getPeople: getPeople,
+  getCastCredits: getCastCredits,
+  getCrewCredits: getCrewCredits,
+  getCast: getCast,
+  getCrew: getCrew,
+
+  // Updates
+  getUpdates: getUpdates,
+
+  // Extra
+  getPopulars: getPopulars,
+
+  // Utils
+  stripHTML: _helpers.stripHTML
+};
+module.exports = exports['default'];
