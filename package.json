@@ -23,7 +23,7 @@
     "tvmaze",
     "api"
   ],
-  "author": "Ivo Reis",
+  "author": "Ivo Reis <reis.ivo@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.24.1",
